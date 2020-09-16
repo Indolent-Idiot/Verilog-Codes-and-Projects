@@ -1,0 +1,51 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: iM
+// Engineer V M R
+// Create Date: 15.09.2020 16:30:11
+// Design Name: 8kb RAM
+// Module Name: ram_test
+// Project Name: Random Acess Memory series
+
+// Description: The following 8k memory is write mode priortised  synchronous with positive edge of clock
+// 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
+module Ram8k(
+    input [9:0] addr,              // 10 bits of address bus
+    input wire [7:0] datain,       //  8 bits of data in bus
+    output reg [7:0] dataout,      //  8 bits of data out bus
+    input w,                       // write control
+    input r,                       // read control
+    input rst,                     // reset
+    input clk                       // input clock
+    );
+    integer i;
+    reg [7:0]mem[1023:0];
+    always@(posedge clk)
+    begin
+    if(rst)               //  if reset is enabled data inside memory will be set into 0
+    begin
+    for(i=0;i<=1023;i=i+1)
+    mem[i]=8'b00000000;
+    dataout<=0;
+    end
+    else if(w)            //  if write control bit is enabled then memory specified address will be written with input data
+    mem[addr]<=datain;
+    else if(r)            // if read control bit is enabled then memory of specified address will be read out
+    dataout=mem[addr];
+    else
+    dataout<=8'bxxxxxxxx;   // if either of reset or write or read control bits enabled data output will be set to x 
+    end
+    
+        
+    
+  endmodule
